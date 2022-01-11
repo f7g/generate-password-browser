@@ -1,31 +1,27 @@
-var crypto = require('crypto');
-
-const RANDOM_BATCH_SIZE = 256;
-
-var randomIndex;
-var randomBytes;
-
 var getNextRandomValue = function() {
-	if (randomIndex === undefined || randomIndex >= randomBytes.length) {
-		randomIndex = 0;
-		randomBytes = crypto.randomBytes(RANDOM_BATCH_SIZE);
-	}
+	const RANDOM_BATCH_SIZE = 256;
+  var randomIndex, randomBytes;
+  if (randomIndex === undefined || randomIndex >= randomBytes.length) {
+    var arr = new Uint32Array(RANDOM_BATCH_SIZE);
+    randomIndex = 0;
+    randomBytes = window.crypto.getRandomValues(arr);
+  }
 
-	var result = randomBytes[randomIndex];
-	randomIndex += 1;
+  var result = randomBytes[randomIndex];
+  randomIndex += 1;
 
-	return result;
+  return result;
 };
 
 // Generates a random number
-var randomNumber = function(max) {
-	// gives a number between 0 (inclusive) and max (exclusive)
-	var rand = getNextRandomValue();
-	while (rand >= 256 - (256 % max)) {
-		rand = getNextRandomValue();
-	}
-	return rand % max;
-};
+function randomNumber(max) {
+  var min = 0;
+  // gives a number between 0 (included) and max (not included)
+  var rand = getNextRandomValue();
+  rand = Math.floor(Math.random() * (max - min) + min);
+	
+  return rand % max;
+}
 
 // Possible combinations
 var lowercase = 'abcdefghijklmnopqrstuvwxyz',
